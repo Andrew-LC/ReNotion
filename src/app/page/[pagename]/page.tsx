@@ -10,6 +10,10 @@ export default function Page({ params }: any) {
                     contentEditable="true">
                     {params.pagename ? params.pagename : 'Untitled'}
                 </h1>
+                <div>
+                    {}
+                </div>
+                <Prompt />
             </div>
         </div>
     );
