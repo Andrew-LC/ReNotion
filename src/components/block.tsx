@@ -21,7 +21,7 @@ export default function Block({ type, value }: Block) {
             case BlockType.IMAGE:
                 return <img className="w-1/2" src={value} />
             case BlockType.BLOCKQUOTE:
-                return <blockquote className="outine-none border-l-2 border-slate-300 pl-4" contentEditable="true" suppressHydrationWarning={true}>{value}</blockquote>
+                return <blockquote className="focus:outline-none focus-visible:outine-none border-l-2 border-slate-300 pl-4" contentEditable="true" suppressHydrationWarning={true}>{value}</blockquote>
             default:
                 return <div className="outline-none" contentEditable="true" suppressHydrationWarning={true}></div>;
         }
