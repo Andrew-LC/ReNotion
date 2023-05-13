@@ -6,24 +6,63 @@ enum BlockType {
 }
 
 type Block = {
+    id?: string,
     type?: string,
     value: string
 }
 
-export default function Block({ type, value }: Block) {
+
+export default function Block({ id, type, value }: Block) {
+
+    const onClick = (e: any) => {
+        e.preventDefault();
+    }
 
     const renderType = () => {
         switch (type) {
             case BlockType.PARAGRAPH:
-                return <p className="outline-none" contentEditable="true" suppressHydrationWarning={true}>{value}</p>
+                return (
+                    <p
+                        onContextMenu={onClick}
+                        id={id} className="outline-none"
+                        contentEditable="true"
+                        suppressHydrationWarning={true}>
+                        {value}
+                    </p>
+                )
             case BlockType.HEADING:
-                return <h1 className="outline-none" contentEditable="true" suppressHydrationWarning={true}>{value}</h1>
+                return (
+                    <h1
+                        onContextMenu={onClick}
+                        id={id}
+                        className="outline-none"
+                        contentEditable="true"
+                        suppressHydrationWarning={true}>
+                        {value}
+                    </h1>
+                )
             case BlockType.IMAGE:
-                return <img className="w-1/2" src={value} />
+                return (
+                    <div
+                        className="resize p-2"
+                        id={id}>
+                        <img
+                            className="w-full"
+                            src={value} />
+                    </div>
+                )
             case BlockType.BLOCKQUOTE:
-                return <blockquote className="focus:outline-none focus-visible:outine-none border-l-2 border-slate-300 pl-4" contentEditable="true" suppressHydrationWarning={true}>{value}</blockquote>
+                return (
+                    <blockquote
+                        onContextMenu={onClick}
+                        id={id} className="focus:outline-none focus-visible:outine-none border-l-[3px] border-slate-300 pl-4"
+                        contentEditable="true"
+                        suppressHydrationWarning={true}>
+                        {value}
+                    </blockquote>
+                )
             default:
-                return <div className="outline-none" contentEditable="true" suppressHydrationWarning={true}></div>;
+                return <div onContextMenu={onClick} id={id} className="outline-none" contentEditable="true" suppressHydrationWarning={true}></div>;
         }
     }
 
