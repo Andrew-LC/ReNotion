@@ -1,11 +1,16 @@
 import { useRecoilState } from 'recoil';
-import { valueState, blockState } from '../store/atoms';
+import { valueState, blockState, menuState } from '../store/atoms';
 
 export default function Prompt() {
     const [value, setValue] = useRecoilState(valueState)
     const [renderState, setRenderState] = useRecoilState(blockState);
+    const [isActive, setActiveState] = useRecoilState(menuState);
 
     const handleChange = (e: React.ChangeEvent<HTMLDivElement>) => {
+        const target = e.currentTarget.textContent;
+        if (target.length === 1 && target === "\\") {
+            setActiveState(true)
+        }
         setValue(e.currentTarget.textContent || "");
     };
 
@@ -21,11 +26,14 @@ export default function Prompt() {
     };
 
     return (
-        <div
-            contentEditable="true"
-            className="outline-none"
-            onInput={handleChange}
-            onKeyDown={handleKeyPress}
-        />
+        <>
+            <div
+                contentEditable="true"
+                className="outline-none"
+                onInput={handleChange}
+                onKeyDown={handleKeyPress}
+            >
+            </div>
+        </>
     );
 }
