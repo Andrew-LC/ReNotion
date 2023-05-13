@@ -23,7 +23,7 @@ const exampleData: RenderBlockState[] = [
 
 const blockState = atom({
   key: 'blockState',
-  default: exampleData
+  default: []
 })
 
 
@@ -35,7 +35,11 @@ const valueState = atom({
 
 const menuState = atom({
   key: 'menuState',
-  default: false
+  default: {
+    isActive: false,
+    x: 0,
+    y: 0
+  }
 })
 
 

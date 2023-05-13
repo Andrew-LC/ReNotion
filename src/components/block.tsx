@@ -2,7 +2,8 @@ enum BlockType {
     HEADING = 'heading',
     PARAGRAPH = 'paragraph',
     IMAGE = 'image',
-    BLOCKQUOTE = 'blockquote'
+    BLOCKQUOTE = 'blockquote',
+    TODO = 'todo'
 }
 
 type Block = {
@@ -60,6 +61,18 @@ export default function Block({ id, type, value }: Block) {
                         suppressHydrationWarning={true}>
                         {value}
                     </blockquote>
+                )
+            case BlockType.TODO:
+                return (
+                    <div className="flex gap-2 items-center">
+                        <input type="checkbox" id={id} name="check" className="form-checkbox" />
+                        <label htmlFor="check"
+                            id={id}
+                            contentEditable="true"
+                            className="outline-none"
+                            onContextMenu={onClick}
+                        >{value}</label>
+                    </div >
                 )
             default:
                 return <div onContextMenu={onClick} id={id} className="outline-none" contentEditable="true" suppressHydrationWarning={true}></div>;

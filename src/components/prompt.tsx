@@ -1,15 +1,35 @@
 import { useRecoilState } from 'recoil';
 import { valueState, blockState, menuState } from '../store/atoms';
+import { useState, useEffect } from 'react';
 
 export default function Prompt() {
     const [value, setValue] = useRecoilState(valueState)
     const [renderState, setRenderState] = useRecoilState(blockState);
     const [isActive, setActiveState] = useRecoilState(menuState);
+    const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const handleWindowMouseMove = event => {
+            setCoords({
+                x: event.clientX,
+                y: event.clientY,
+            });
+        };
+        window.addEventListener('mousemove', handleWindowMouseMove);
+
+        return () => {
+            window.removeEventListener(
+                'mousemove',
+                handleWindowMouseMove,
+            );
+        };
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLDivElement>) => {
         const target = e.currentTarget.textContent;
-        if (target.length === 1 && target === "\\") {
-            setActiveState(true)
+        if (target?.length === 1 && target === "\\") {
+            setActiveState({ isActive: true, x: coords.x, y: coords.y })
+            setValue("")
         }
         setValue(e.currentTarget.textContent || "");
     };
@@ -21,7 +41,7 @@ export default function Prompt() {
                 ...prev,
                 { type: 'paragraph', value: value.trim() }
             ]);
-            setValue('');
+            e.currentTarget.textContent = "";
         }
     };
 

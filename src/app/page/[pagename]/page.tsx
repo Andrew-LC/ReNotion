@@ -30,7 +30,7 @@ export default function Page({ params }: any) {
                     className="font-extrabold text-4xl outline-none mb-6"
                     contentEditable="true"
                 >
-                    {params.pagename ? params.pagename : 'Untitled'}
+                    {params.pagename === "Notion" ? 'Untitled' : params.pagename}
                 </h1>
                 <>
                     {renderState.length > 0 &&
