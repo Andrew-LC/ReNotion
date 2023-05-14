@@ -1,3 +1,7 @@
+import { rightMenuState } from "../store/atoms";
+import { useRecoilState } from "recoil";
+import { useState, useEffect } from "react";
+
 enum BlockType {
     HEADING = 'heading',
     PARAGRAPH = 'paragraph',
@@ -14,9 +18,29 @@ type Block = {
 
 
 export default function Block({ id, type, value }: Block) {
+    const [menuState, setMenuState] = useRecoilState(rightMenuState)
+    const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const handleWindowMouseMove = event => {
+            setCoords({
+                x: event.clientX,
+                y: event.clientY,
+            });
+        };
+        window.addEventListener('mousemove', handleWindowMouseMove);
+
+        return () => {
+            window.removeEventListener(
+                'mousemove',
+                handleWindowMouseMove,
+            );
+        };
+    }, []);
 
     const onClick = (e: any) => {
         e.preventDefault();
+        setMenuState({ isActive: true, currentBlockId: e.currentTarget.id, x: coords.x, y: coords.y })
     }
 
     const renderType = () => {
@@ -25,7 +49,7 @@ export default function Block({ id, type, value }: Block) {
                 return (
                     <p
                         onContextMenu={onClick}
-                        id={id} className="outline-none"
+                        id={id} className="outline-none whitespace-pre-wrap break-words text-justify"
                         contentEditable="true"
                         suppressHydrationWarning={true}>
                         {value}
@@ -44,13 +68,11 @@ export default function Block({ id, type, value }: Block) {
                 )
             case BlockType.IMAGE:
                 return (
-                    <div
-                        className="resize p-2"
-                        id={id}>
-                        <img
-                            className="w-full"
-                            src={value} />
-                    </div>
+                    <img
+                        className="w-full"
+                        onContextMenu={onClick}
+                        id={id}
+                        src={value} />
                 )
             case BlockType.BLOCKQUOTE:
                 return (

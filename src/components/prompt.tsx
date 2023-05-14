@@ -27,7 +27,7 @@ export default function Prompt() {
 
     const handleChange = (e: React.ChangeEvent<HTMLDivElement>) => {
         const target = e.currentTarget.textContent;
-        if (target?.length === 1 && target === "\\") {
+        if (target?.length === 1 && target === "/") {
             setActiveState({ isActive: true, x: coords.x, y: coords.y })
             setValue("")
         }
@@ -37,22 +37,32 @@ export default function Prompt() {
     const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.key === "Enter") {
             e.preventDefault();
-            setRenderState((prev) => [
-                ...prev,
-                { type: 'paragraph', value: value.trim() }
-            ]);
+            const newBlock = {
+                id: "10000",
+                type: "paragraph",
+                value: value,
+            };
+            setRenderState((page) => {
+                return {
+                    ...page,
+                    content: [...page.content, newBlock],
+                };
+            });
             e.currentTarget.textContent = "";
+            setValue("");
         }
-    };
+    }
 
     return (
         <>
             <div
                 contentEditable="true"
-                className="outline-none"
+                className="outline-none opacity-[.7]"
                 onInput={handleChange}
                 onKeyDown={handleKeyPress}
+                data-placeholder='/ for commands '
             >
+                '/' for commands
             </div>
         </>
     );

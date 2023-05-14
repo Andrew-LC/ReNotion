@@ -39,9 +39,13 @@ const MenuContext = () => {
         if (type === 'image') {
             const src = window.prompt("image url !");
             setValue('none')
-            setBlocks((prev) => [...prev, { id: "1234-90898", type: type, value: src }])
+            setBlocks((prev) => {
+                return { ...prev, content: [...prev.content, { id: "1234-90898", type: type, value: src }] }
+            })
         }
-        setBlocks((prev) => [...prev, { id: "1234-90898", type: type, value: "" }])
+        setBlocks((prev) => {
+            return { ...prev, content: [...prev.content, { id: "1234-90898", type: type, value: "" }] }
+        })
     }
 
     return (

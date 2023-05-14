@@ -6,6 +6,16 @@ interface RenderBlockState {
   value: string;
 }
 
+
+interface Page {
+  id: string,
+  type: string,
+  properties: {
+    title: string,
+  },
+  content: RenderBlockState[]
+}
+
 const exampleData: RenderBlockState[] = [
   {
     id: '7e46e7f9-58f2-4f21-8448-82b0f86cde11',
@@ -20,10 +30,20 @@ const exampleData: RenderBlockState[] = [
 ];
 
 
+const pagexample: Page = {
+  id: "121343-ofedf",
+  type: "page",
+  properties: {
+    title: "The data model behind Notion's flexibility"
+  },
+  content: exampleData
+}
+
+
 
 const blockState = atom({
   key: 'blockState',
-  default: []
+  default: pagexample as Page
 })
 
 
@@ -43,4 +63,15 @@ const menuState = atom({
 })
 
 
-export { blockState, valueState, menuState }
+const rightMenuState = atom({
+  key: 'rightMenuState',
+  default: {
+    isActive: false,
+    currentBlockId: "" as string,
+    x: 0,
+    y: 0
+  }
+})
+
+
+export { blockState, valueState, menuState, rightMenuState }
