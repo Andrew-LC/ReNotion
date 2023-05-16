@@ -1,6 +1,11 @@
 import { useRecoilState } from 'recoil';
 import { valueState, blockState, menuState } from '../store/atoms';
 import { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
+function generateUUID() {
+    return uuidv4();
+}
 
 export default function Prompt() {
     const [value, setValue] = useRecoilState(valueState)
@@ -38,7 +43,7 @@ export default function Prompt() {
         if (e.key === "Enter") {
             e.preventDefault();
             const newBlock = {
-                id: "10000",
+                id: generateUUID(),
                 type: "paragraph",
                 value: value,
             };

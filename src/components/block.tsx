@@ -1,6 +1,6 @@
-import { rightMenuState } from "../store/atoms";
+import { rightMenuState, blockState } from "../store/atoms";
 import { useRecoilState } from "recoil";
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEvent } from "react";
 
 enum BlockType {
     HEADING = 'heading',
@@ -19,10 +19,12 @@ type Block = {
 
 export default function Block({ id, type, value }: Block) {
     const [menuState, setMenuState] = useRecoilState(rightMenuState)
+    const [globalState, setGlobalState] = useRecoilState(blockState)
     const [coords, setCoords] = useState({ x: 0, y: 0 });
+    const [blockLocalState, setBlockLocalState] = useState({ id, value })
 
     useEffect(() => {
-        const handleWindowMouseMove = event => {
+        const handleWindowMouseMove = (event: unknown) => {
             setCoords({
                 x: event.clientX,
                 y: event.clientY,
@@ -43,6 +45,56 @@ export default function Block({ id, type, value }: Block) {
         setMenuState({ isActive: true, currentBlockId: e.currentTarget.id, x: coords.x, y: coords.y })
     }
 
+    const onSelect = (e: any) => {
+        e.preventDefault();
+        console.log('block selected');
+        if (blockLocalState.value.length > 0) {
+            setBlockLocalState({ id: '', value: '' })
+        }
+        setBlockLocalState({
+            id: e.currentTarget.id,
+            value: e.currentTarget.textContent
+        });
+    }
+
+    const onValueChange = (e: any) => {
+        let value = e.currentTarget?.textContent
+        setBlockLocalState((prev) => ({
+            id: prev.id,
+            value: value
+        }));
+    };
+
+
+    const onKeyDown = (e: any) => {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            const arr = [...globalState?.content];
+            try {
+                arr.forEach((block, index) => {
+                    if (block.id === blockLocalState.id) {
+                        arr[index] = {
+                            ...block,
+                            value: blockLocalState.value,
+                        };
+                    }
+                });
+                console.log(arr)
+                setGlobalState((prev) => {
+                    return {
+                        ...prev,
+                        content: [...arr],
+                    };
+                });
+            } catch (err) {
+                console.log(err);
+            } finally {
+                console.log("Final state")
+                console.log(globalState)
+            }
+        }
+    }
+
     const renderType = () => {
         switch (type) {
             case BlockType.PARAGRAPH:
@@ -51,7 +103,11 @@ export default function Block({ id, type, value }: Block) {
                         onContextMenu={onClick}
                         id={id} className="outline-none whitespace-pre-wrap break-words text-justify"
                         contentEditable="true"
-                        suppressHydrationWarning={true}>
+                        suppressHydrationWarning={true}
+                        onClick={onSelect}
+                        onInput={onValueChange}
+                        onKeyDown={onKeyDown}
+                    >
                         {value}
                     </p>
                 )
@@ -62,6 +118,9 @@ export default function Block({ id, type, value }: Block) {
                         id={id}
                         className="outline-none"
                         contentEditable="true"
+                        onClick={onSelect}
+                        onInput={onValueChange}
+                        onKeyDown={onKeyDown}
                         suppressHydrationWarning={true}>
                         {value}
                     </h1>
@@ -69,7 +128,7 @@ export default function Block({ id, type, value }: Block) {
             case BlockType.IMAGE:
                 return (
                     <img
-                        className="w-full"
+                        className="w-1/2 rounded-md"
                         onContextMenu={onClick}
                         id={id}
                         src={value} />
@@ -80,6 +139,9 @@ export default function Block({ id, type, value }: Block) {
                         onContextMenu={onClick}
                         id={id} className="focus:outline-none focus-visible:outine-none border-l-[3px] border-slate-300 pl-4"
                         contentEditable="true"
+                        onClick={onSelect}
+                        onInput={onValueChange}
+                        onKeyDown={onKeyDown}
                         suppressHydrationWarning={true}>
                         {value}
                     </blockquote>
@@ -92,12 +154,25 @@ export default function Block({ id, type, value }: Block) {
                             id={id}
                             contentEditable="true"
                             className="outline-none"
+                            onClick={onSelect}
+                            onInput={onValueChange}
+                            onKeyDown={onKeyDown}
                             onContextMenu={onClick}
                         >{value}</label>
                     </div >
                 )
             default:
-                return <div onContextMenu={onClick} id={id} className="outline-none" contentEditable="true" suppressHydrationWarning={true}></div>;
+                return (
+                    <div
+                        onContextMenu={onClick}
+                        id={id} className="outline-none"
+                        onClick={onSelect}
+                        onInput={onValueChange}
+                        onKeyDown={onKeyDown}
+                        contentEditable="true"
+                        suppressHydrationWarning={true}>
+                    </div>
+                );
         }
     }
 

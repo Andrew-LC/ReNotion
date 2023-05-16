@@ -36,7 +36,7 @@ const pagexample: Page = {
   properties: {
     title: "The data model behind Notion's flexibility"
   },
-  content: exampleData
+  content: [] as RenderBlockState
 }
 
 

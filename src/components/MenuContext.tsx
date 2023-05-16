@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { menuState, blockState } from '../store/atoms';
+import { v4 as uuidv4 } from 'uuid';
+
+function generateUUID() {
+    return uuidv4();
+}
 
 const data = [
     {
@@ -40,11 +45,11 @@ const MenuContext = () => {
             const src = window.prompt("image url !");
             setValue('none')
             setBlocks((prev) => {
-                return { ...prev, content: [...prev.content, { id: "1234-90898", type: type, value: src }] }
+                return { ...prev, content: [...prev.content, { id: generateUUID(), type: type, value: src }] }
             })
         }
         setBlocks((prev) => {
-            return { ...prev, content: [...prev.content, { id: "1234-90898", type: type, value: "" }] }
+            return { ...prev, content: [...prev.content, { id: generateUUID(), type: type, value: "" }] }
         })
     }
 

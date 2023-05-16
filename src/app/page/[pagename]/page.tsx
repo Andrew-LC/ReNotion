@@ -30,7 +30,7 @@ export default function Page({ params }: any) {
     const [rightmenu, setRightMenuState] = useRecoilState(rightMenuState)
 
     const handleClick = () => {
-        setMenuState({ isActive: false });
+        setMenuState({ isActive: false })
         setRightMenuState({ isActive: false })
     }
 
@@ -40,7 +40,7 @@ export default function Page({ params }: any) {
             <RightMenuContext />
             <Header />
 
-            <div onClick={handleClick} className="w-full h-full flex flex-col gap-2 text-[#ffffff] lg:pr-[350px] lg:pl-[350px]">
+            <div onClick={handleClick} className="w-full h-full flex flex-col gap-2 text-[#ffffff] overflow-scroll lg:pr-[350px] lg:pl-[350px]">
                 <h1
                     className="font-extrabold text-4xl outline-none mb-6"
                     contentEditable="true"
