@@ -1,6 +1,8 @@
 import { rightMenuState, blockState } from "../store/atoms";
 import { useRecoilState } from "recoil";
 import { useState, useEffect, MouseEvent } from "react";
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 enum BlockType {
     HEADING = 'heading',
@@ -17,11 +19,23 @@ type Block = {
 }
 
 
-export default function Block({ id, type, value }: Block) {
+export default function Block({ id, type, value, ...props }: Block) {
     const [menuState, setMenuState] = useRecoilState(rightMenuState)
     const [globalState, setGlobalState] = useRecoilState(blockState)
     const [coords, setCoords] = useState({ x: 0, y: 0 });
     const [blockLocalState, setBlockLocalState] = useState({ id, value })
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({ id: id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
 
     useEffect(() => {
         const handleWindowMouseMove = (event: unknown) => {
@@ -46,7 +60,6 @@ export default function Block({ id, type, value }: Block) {
     }
 
     const onSelect = (e: any) => {
-        e.preventDefault();
         console.log('block selected');
         if (blockLocalState.value.length > 0) {
             setBlockLocalState({ id: '', value: '' })
@@ -100,6 +113,7 @@ export default function Block({ id, type, value }: Block) {
             case BlockType.PARAGRAPH:
                 return (
                     <p
+                        ref={setNodeRef} style={style} {...attributes} {...listeners}
                         onContextMenu={onClick}
                         id={id} className="outline-none whitespace-pre-wrap break-words text-justify"
                         contentEditable="true"
@@ -114,6 +128,7 @@ export default function Block({ id, type, value }: Block) {
             case BlockType.HEADING:
                 return (
                     <h1
+                        ref={setNodeRef} style={style} {...attributes} {...listeners}
                         onContextMenu={onClick}
                         id={id}
                         className="outline-none"
@@ -128,6 +143,7 @@ export default function Block({ id, type, value }: Block) {
             case BlockType.IMAGE:
                 return (
                     <img
+                        ref={setNodeRef} style={style} {...attributes} {...listeners}
                         className="w-1/2 rounded-md"
                         onContextMenu={onClick}
                         id={id}
@@ -136,6 +152,7 @@ export default function Block({ id, type, value }: Block) {
             case BlockType.BLOCKQUOTE:
                 return (
                     <blockquote
+                        ref={setNodeRef} style={style} {...attributes} {...listeners}
                         onContextMenu={onClick}
                         id={id} className="focus:outline-none focus-visible:outine-none border-l-[3px] border-slate-300 pl-4"
                         contentEditable="true"
@@ -148,7 +165,7 @@ export default function Block({ id, type, value }: Block) {
                 )
             case BlockType.TODO:
                 return (
-                    <div className="flex gap-2 items-center">
+                    <div className="flex gap-2 items-center" ref={setNodeRef} style={style} {...attributes} {...listeners}>
                         <input type="checkbox" id={id} name="check" className="form-checkbox" />
                         <label htmlFor="check"
                             id={id}
@@ -164,6 +181,7 @@ export default function Block({ id, type, value }: Block) {
             default:
                 return (
                     <div
+                        ref={setNodeRef} style={style} {...attributes} {...listeners}
                         onContextMenu={onClick}
                         id={id} className="outline-none"
                         onClick={onSelect}

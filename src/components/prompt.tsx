@@ -1,5 +1,5 @@
-import { useRecoilState } from 'recoil';
-import { valueState, blockState, menuState } from '../store/atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { valueState, blockState, menuState, placeHolder } from '../store/atoms';
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,8 +10,10 @@ function generateUUID() {
 export default function Prompt() {
     const [value, setValue] = useRecoilState(valueState)
     const [renderState, setRenderState] = useRecoilState(blockState);
+    const [placeholder, setPlaceHolderState] = useRecoilState(placeHolder);
     const [isActive, setActiveState] = useRecoilState(menuState);
     const [coords, setCoords] = useState({ x: 0, y: 0 });
+    const [temp, setTemp] = useState("");
 
     useEffect(() => {
         const handleWindowMouseMove = event => {
@@ -32,6 +34,9 @@ export default function Prompt() {
 
     const handleChange = (e: React.ChangeEvent<HTMLDivElement>) => {
         const target = e.currentTarget.textContent;
+        setPlaceHolderState((prev) => {
+            return { ...prev, isActive: true }
+        })
         if (target?.length === 1 && target === "/") {
             setActiveState({ isActive: true, x: coords.x, y: coords.y })
             setValue("")
@@ -67,7 +72,7 @@ export default function Prompt() {
                 onKeyDown={handleKeyPress}
                 data-placeholder='/ for commands '
             >
-                '/' for commands
+                {placeholder.value}
             </div>
         </>
     );

@@ -8,6 +8,19 @@ import Header from '../../../components/Header';
 import RightMenuContext from '../../../components/RightMenuContext';
 import { blockState, menuState, rightMenuState } from '../../../store/atoms';
 import { useRecoilState } from 'recoil';
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+import {
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 
 interface RenderBlockState {
     id?: string,
@@ -34,6 +47,13 @@ export default function Page({ params }: any) {
         setRightMenuState({ isActive: false })
     }
 
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
     return (
         <div onClick={handleClick} className="w-full h-screen flex pt-32 pr-[80px] pl-[80px]">
             <MenuContext />
@@ -48,13 +68,55 @@ export default function Page({ params }: any) {
                     {params.pagename === "Notion" ? 'Untitled' : params.pagename}
                 </h1>
                 <>
-                    {renderState.content?.length > 0 &&
-                        renderState.content?.map((block: RenderBlockState, index) => (
-                            <Block id={block?.id} key={index} type={block?.type} value={block?.value} />
-                        ))}
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd}
+                    >
+                        <SortableContext
+                            items={renderState.content}
+                            strategy={verticalListSortingStrategy}
+                        >
+                            {renderState.content?.length > 0 &&
+                                renderState.content?.map((block: RenderBlockState, index) => (
+                                    <Block id={block?.id} key={index} type={block?.type} value={block?.value} />
+                                ))}
+                        </SortableContext>
+                    </DndContext>
                 </>
                 <Prompt />
             </div>
         </div>
     );
+
+    function handleDragEnd(event) {
+        const { active, over } = event;
+        const arr = renderState?.content;
+
+        console.log(active.id);
+        console.log(over.id);
+
+        if (active.id !== over.id) {
+            let oldPos = 0;
+            let newPos = 0;
+            arr.forEach((block, index) => {
+                if (block.id === active.id) {
+                    oldPos = index;
+                } else if (block.id === over.id) {
+                    newPos = index;
+                }
+            });
+
+            // Swap the positions of the blocks
+            const updatedArr = [...arr];
+            [updatedArr[oldPos], updatedArr[newPos]] = [updatedArr[newPos], updatedArr[oldPos]];
+
+            // Update the renderState with the new order of blocks
+            setRenderState((prevState) => ({
+                ...prevState,
+                content: updatedArr,
+            }));
+        }
+    }
+
 }

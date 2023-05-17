@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { rightMenuState, blockState } from '../store/atoms';
+import { rightMenuState, blockState, placeHolder } from '../store/atoms';
 
 const data = [
     {
@@ -16,6 +16,7 @@ const data = [
 const RightMenuContext = () => {
     const menustate = useRecoilValue(rightMenuState);
     const [blocks, setBlockState] = useRecoilState(blockState);
+    const [placeholder, setPlaceHolderState] = useRecoilState(placeHolder);
     const [value, setValue] = useState("none");
 
 
@@ -47,6 +48,9 @@ const RightMenuContext = () => {
                 ...prev,
                 content: [...arr]
             }
+        })
+        setPlaceHolderState((prev) => {
+            return { ...prev, isActive: false }
         })
     }
 

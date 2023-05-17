@@ -36,7 +36,7 @@ const pagexample: Page = {
   properties: {
     title: "The data model behind Notion's flexibility"
   },
-  content: [] as RenderBlockState
+  content: exampleData as RenderBlockState
 }
 
 
@@ -53,6 +53,7 @@ const valueState = atom({
 })
 
 
+// State for the / click menu
 const menuState = atom({
   key: 'menuState',
   default: {
@@ -63,6 +64,7 @@ const menuState = atom({
 })
 
 
+// State for the right click menu
 const rightMenuState = atom({
   key: 'rightMenuState',
   default: {
@@ -74,4 +76,12 @@ const rightMenuState = atom({
 })
 
 
-export { blockState, valueState, menuState, rightMenuState }
+const placeHolder = atom({
+  key: 'placeholder',
+  default: {
+    value: "'/' for commands",
+    isActive: false
+  }
+})
+
+export { blockState, valueState, menuState, rightMenuState, placeHolder }
