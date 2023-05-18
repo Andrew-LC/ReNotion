@@ -4,4 +4,4 @@ This is a simple Notion clone made using:
 - Typescript
 - TailwindCSS
 - SupaBase
-- Zustand
+- Recoil 

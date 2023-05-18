@@ -84,4 +84,10 @@ const placeHolder = atom({
   }
 })
 
-export { blockState, valueState, menuState, rightMenuState, placeHolder }
+
+const isEditable = atom({
+  key: 'isEditable',
+  default: true
+})
+
+export { blockState, valueState, menuState, rightMenuState, placeHolder, isEditable }

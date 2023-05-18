@@ -1,7 +1,7 @@
 "use client"
 
 import Block from '../../../components/block';
-//import BlockContainer from '../../../components/blockcontainer';
+import BlockContainer from '../../../components/blockcontainer';
 import Prompt from '../../../components/prompt';
 import MenuContext from '../../../components/MenuContext';
 import Header from '../../../components/Header';
@@ -55,14 +55,14 @@ export default function Page({ params }: any) {
     );
 
     return (
-        <div onClick={handleClick} className="w-full h-screen flex pt-32 pr-[80px] pl-[80px]">
+        <div onClick={handleClick} className="w-full h-screen flex pt-32 lg:pr-[80px] lg:pl-[80px]">
             <MenuContext />
             <RightMenuContext />
             <Header />
 
-            <div onClick={handleClick} className="w-full h-full flex flex-col gap-2 text-[#ffffff] overflow-scroll lg:pr-[350px] lg:pl-[350px]">
+            <div onClick={handleClick} className="w-full h-full flex flex-col gap-2 text-[#ffffff] overflow-scroll pr-[90px] pl-[90px] lg:pr-[350px] lg:pl-[350px]">
                 <h1
-                    className="font-extrabold text-4xl outline-none mb-6"
+                    className="font-extrabold text-4xl outline-none mb-5"
                     contentEditable="true"
                 >
                     {params.pagename === "Notion" ? 'Untitled' : params.pagename}
@@ -79,7 +79,7 @@ export default function Page({ params }: any) {
                         >
                             {renderState.content?.length > 0 &&
                                 renderState.content?.map((block: RenderBlockState, index) => (
-                                    <Block id={block?.id} key={index} type={block?.type} value={block?.value} />
+                                    <BlockContainer id={block?.id}><Block id={block?.id} key={index} type={block?.type} value={block?.value} /></BlockContainer>
                                 ))}
                         </SortableContext>
                     </DndContext>

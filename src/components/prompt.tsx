@@ -1,7 +1,8 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { valueState, blockState, menuState, placeHolder } from '../store/atoms';
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import BlockContainer from './blockcontainer';
 
 function generateUUID() {
     return uuidv4();
