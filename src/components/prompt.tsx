@@ -33,8 +33,8 @@ export default function Prompt() {
         };
     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLDivElement>) => {
-        const target = e.currentTarget.textContent;
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const target = e.currentTarget.value;
         setPlaceHolderState((prev) => {
             return { ...prev, isActive: true }
         })
@@ -42,10 +42,10 @@ export default function Prompt() {
             setActiveState({ isActive: true, x: coords.x, y: coords.y })
             setValue("")
         }
-        setValue(e.currentTarget.textContent || "");
+        setValue(e.currentTarget.value || "");
     };
 
-    const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             e.preventDefault();
             const newBlock = {
@@ -53,28 +53,27 @@ export default function Prompt() {
                 type: "paragraph",
                 value: value,
             };
+            console.log(newBlock)
             setRenderState((page) => {
                 return {
                     ...page,
                     content: [...page.content, newBlock],
                 };
             });
-            e.currentTarget.textContent = "";
+            e.currentTarget.value = "";
             setValue("");
         }
     }
 
     return (
         <>
-            <div
-                contentEditable="true"
-                className="outline-none opacity-[.7]"
-                onInput={handleChange}
+            <input
+                className="outline-none bg-[#191919]"
+                onChange={handleChange}
                 onKeyDown={handleKeyPress}
                 data-placeholder='/ for commands '
-            >
-                {placeholder.value}
-            </div>
+                placeholder={placeholder.value}
+            />
         </>
     );
 }

@@ -127,11 +127,13 @@ export default function Block({ id, type, value, ...props }: Block) {
                 )
             case BlockType.IMAGE:
                 return (
-                    <img
-                        className="w-1/2 rounded-md"
-                        onContextMenu={onClick}
-                        id={id}
-                        src={value} />
+                    <div className="w-[100%] h-[400px]">
+                        <div
+                            className="w-full h-full"
+                            onContextMenu={onClick}
+                            id={id}
+                            style={{ "background": `${value}` }} />
+                    </div>
                 )
             case BlockType.BLOCKQUOTE:
                 return (

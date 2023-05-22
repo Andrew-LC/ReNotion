@@ -47,14 +47,16 @@ const MenuContext = () => {
             setBlocks((prev) => {
                 return { ...prev, content: [...prev.content, { id: generateUUID(), type: type, value: src }] }
             })
+        } else {
+            setBlocks((prev) => {
+                console.log(block)
+                return { ...prev, content: [...prev.content, { id: generateUUID(), type: type, value: "" }] }
+            })
         }
-        setBlocks((prev) => {
-            return { ...prev, content: [...prev.content, { id: generateUUID(), type: type, value: "" }] }
-        })
     }
 
     return (
-        <div style={{ "display": value, "top": `${menustate.y}px`, "left": `${menustate.x}px` }} className="absolute bottom-0 bg-[#252525] rounded-md w-[210px] flex flex-col gap-2 items-center w-[100px] h-[220px] overflow-hidden" >
+        <div style={{ "display": value, "top": `${menustate.y}px`, "left": `${menustate.x}px` }} className="z-20 absolute bottom-0 bg-[#252525] rounded-md w-[210px] flex flex-col gap-2 items-center w-[100px] h-[220px] overflow-hidden" >
             {
                 data.map((value) => {
                     return <div onClick={onClick} className="cursor-pointer rounded-md w-full flex-1 p-3 hover:bg-[#313131]" id={value.id}>{value.name}</div>
