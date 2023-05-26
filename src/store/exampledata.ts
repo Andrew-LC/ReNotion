@@ -40,19 +40,13 @@ const exampleBlue: RenderBlockState[] = [
 
 export const pagexample: Page = {
   id: `${generateUUID()}`,
-  type: "page",
-  properties: {
-    title: "Notion"
-  },
-  content: exampleData as RenderBlockState
+  title: "Notion",
+  content: exampleData
 }
 
 const pagexample2: Page = {
   id: `${generateUUID()}`,
-  type: "page",
-  properties: {
-    title: "Blue Period"
-  },
+  title: "Blue Period",
   content: exampleBlue
 }
 

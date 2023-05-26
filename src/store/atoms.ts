@@ -4,7 +4,7 @@ import Page from 'interfaces'
 
 const pages = atom({
   key: "page",
-  default: pagesexample
+  default: []
 })
 
 

@@ -1,7 +1,7 @@
-export default function SignUp() {
-    return (
-        <div className="h-screen bg-black text-white">
-            Sign Up
-        </div>
-    );
-}
+import { SignUp } from "@clerk/nextjs";
+
+const SignUpPage = () => (
+    <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" />
+);
+
+export default SignUpPage;

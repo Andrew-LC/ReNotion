@@ -7,10 +7,7 @@ export interface RenderBlockState {
 
 export interface Page {
   id: string,
-  type: string,
-  properties: {
-    title: string,
-  },
+  title: string,
   content: RenderBlockState[]
 }
 

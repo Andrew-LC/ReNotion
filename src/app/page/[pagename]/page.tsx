@@ -7,9 +7,11 @@ import MenuContext from '../../../components/MenuContext';
 import RightDrawer from '../../../components/RightDrawer';
 import Header from '../../../components/Header';
 import RightMenuContext from '../../../components/RightMenuContext';
+import supabaseClient from "../../../lib/supabaseClient"
+import { useUser, useAuth, UserButton } from "@clerk/nextjs";
 import { blockState, menuState, rightMenuState, pages } from '../../../store/atoms';
 import { useRecoilState } from 'recoil';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     DndContext,
     closestCenter,
@@ -45,6 +47,25 @@ export default function Page({ params }: any) {
     const [rightmenu, setRightMenuState] = useRecoilState(rightMenuState)
     const [tempState, setTempState] = useState("")
     const [pagesDetails, setDetails] = useRecoilState(pages)
+    const { getToken, userId } = useAuth();
+
+    useEffect(() => {
+        async function getPages() {
+            const supabaseAccessToken = await getToken({
+                template: "ReNotionJWT",
+            });
+            const supabase = await supabaseClient(supabaseAccessToken);
+            const { data, error } = await supabase
+                .from('pages')
+                .select("*")
+            const newdata = [...data]
+            setDetails(() => {
+                return newdata
+            })
+            console.log(newdata)
+        }
+        getPages()
+    }, [])
 
     const handleClick = () => {
         setMenuState({ isActive: false })
@@ -62,9 +83,7 @@ export default function Page({ params }: any) {
             const list = [...pagesDetails]
             setRenderState((prev) => ({
                 ...prev,
-                properties: {
-                    title: tempState
-                }
+                title: tempState
             }));
             list.some((page, index) => {
                 if (page.id === renderState.id) {
@@ -105,7 +124,7 @@ export default function Page({ params }: any) {
                         contentEditable="true"
                         onInput={handleTitleChange}
                     >
-                        {!renderState.properties.title ? "Untitled" : renderState.properties.title}
+                        {!renderState ? "Untitled" : renderState.title}
                     </h1>
                     <>
                         <DndContext
