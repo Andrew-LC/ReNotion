@@ -1,15 +1,16 @@
 "use client"
 
-import Block from '../../../components/block';
-import BlockContainer from '../../../components/blockcontainer';
-import Prompt from '../../../components/prompt';
-import MenuContext from '../../../components/MenuContext';
-import RightDrawer from '../../../components/RightDrawer';
-import Header from '../../../components/Header';
-import RightMenuContext from '../../../components/RightMenuContext';
-import supabaseClient from "../../../lib/supabaseClient"
-import { useUser, useAuth, UserButton } from "@clerk/nextjs";
-import { blockState, menuState, rightMenuState, pages } from '../../../store/atoms';
+import Block from '../../components/block';
+import BlockContainer from '../../components/blockcontainer';
+import Prompt from '../../components/prompt';
+import MenuContext from '../../components/MenuContext';
+import RightDrawer from '../../components/RightDrawer';
+import Header from '../../components/Header';
+import RightMenuContext from '../../components/RightMenuContext';
+import supabaseClient from "../../lib/supabaseClient"
+import { updateHeading } from "../../lib/supabaseAPI";
+import { useAuth } from "@clerk/nextjs";
+import { blockState, menuState, rightMenuState, pages } from '../../store/atoms';
 import { useRecoilState } from 'recoil';
 import { useState, useEffect } from 'react';
 import {
@@ -33,11 +34,8 @@ interface RenderBlockState {
 }
 
 interface Page {
-    id: string,
-    type: string,
-    properties: {
-        title: string,
-    },
+    page_id: string,
+    title: string,
     content: RenderBlockState[]
 }
 
@@ -58,10 +56,9 @@ export default function Page({ params }: any) {
             const { data, error } = await supabase
                 .from('pages')
                 .select("*")
-            const newdata = [...data]
-            setDetails(() => {
-                return newdata
-            })
+            if (error) console.log(error);
+            const newdata = [...data!]
+            setDetails((newdata as unknown) as string[])
             console.log(newdata)
         }
         getPages()
@@ -80,25 +77,29 @@ export default function Page({ params }: any) {
     const onKeyPressHeading = (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
-            const list = [...pagesDetails]
+            const list: Page[] = [...pagesDetails]
+            setDetails([])
             setRenderState((prev) => ({
                 ...prev,
                 title: tempState
             }));
-            list.some((page, index) => {
-                if (page.id === renderState.id) {
-                    list.splice(index, index);
+            const newArr = renderState;
+            list.some(async (page, index) => {
+                if (page.page_id === renderState.page_id) {
+                    console.log(renderState)
+                    list.splice(index, 1, newArr);
+                    //list.push(renderState)
+                    setDetails(list)
+                    const supabaseAccessToken = await getToken({
+                        template: "ReNotionJWT",
+                    });
+                    updateHeading(supabaseAccessToken, renderState.page_id, tempState)
                     return true; // Exit the loop
                 } else {
                     console.log("This is kinda annoying!");
                     return false; // Continue to the next iteration
                 }
             });
-
-            list.push(renderState)
-            console.log(list)
-            setDetails([])
-            setDetails(list)
         }
     };
 
@@ -132,18 +133,20 @@ export default function Page({ params }: any) {
                             collisionDetection={closestCenter}
                             onDragEnd={handleDragEnd}
                         >
-                            <SortableContext
-                                items={renderState.content}
-                                strategy={verticalListSortingStrategy}
-                            >
-                                {
-                                    renderState.content?.length ?
-                                        renderState.content?.map((block: RenderBlockState, index) => (
-                                            <BlockContainer id={block?.id}><Block id={block?.id} key={index} type={block?.type} value={block?.value} /></BlockContainer>
-                                        )) :
-                                        ""
-                                }
-                            </SortableContext>
+                            {
+                                !renderState.content ? "" :
+                                    <SortableContext
+                                        items={renderState.content}
+                                        strategy={verticalListSortingStrategy}
+                                    >
+                                        {
+                                            renderState.content?.map((block: RenderBlockState, index) => (
+                                                <BlockContainer id={block?.id}><Block id={block?.id} key={index} type={block?.type} value={block?.value} /></BlockContainer>
+                                            ))
+                                        }
+                                    </SortableContext>
+
+                            }
                         </DndContext>
                     </>
                     <Prompt />

@@ -1,7 +1,7 @@
 import { RenderBlockState, Page } from "./interfaces"
 import { v4 as uuidv4 } from 'uuid';
 
-function generateUUID() {
+export function generateUUID() {
   return uuidv4();
 }
 
@@ -52,10 +52,7 @@ const pagexample2: Page = {
 
 export const blankpage: Page = {
   id: `${generateUUID()}`,
-  type: "page",
-  properties: {
-    title: "Untitled"
-  },
+  title: "Untitled",
   content: []
 }
 

@@ -6,7 +6,8 @@ export interface RenderBlockState {
 
 
 export interface Page {
-  id: string,
+  page_id: string,
+  owner_id: string
   title: string,
   content: RenderBlockState[]
 }

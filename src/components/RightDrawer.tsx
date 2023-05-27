@@ -1,7 +1,7 @@
 import { useRecoilState } from "recoil"
 import { pages, blockState, hamburgerMenuState } from "../store/atoms"
 import { BsArrowReturnRight } from "react-icons/bs"
-import { blankpage } from "../store/exampledata"
+import { generateUUID } from "../store/exampledata"
 import { useState, useEffect } from "react"
 import { useUser, useAuth, UserButton } from "@clerk/nextjs";
 import supabaseClient from "../lib/supabaseClient"
@@ -13,8 +13,9 @@ export default function RightDrawer() {
     const [renderState, setRenderState] = useRecoilState(blockState)
     const [pagesState, setPagesState] = useRecoilState(pages)
     const { getToken, userId } = useAuth();
+    const [isLoading, setLoading] = useState(true);
 
-    const { user } = useUser();
+    const { isLoaded, user } = useUser();
 
     useEffect(() => {
         if (drawerstate) {
@@ -22,7 +23,12 @@ export default function RightDrawer() {
         } else {
             setDrawer("none")
         }
-    }, [drawerstate])
+        if (!pagesState) {
+            setLoading(true)
+        } else {
+            setLoading(false)
+        }
+    }, [drawerstate, pagesState])
 
     const onClick = (e) => {
         const index = e.currentTarget.id;
@@ -31,8 +37,12 @@ export default function RightDrawer() {
     }
 
     const onNewPage = async () => {
-        const newPage = blankpage
-        setRenderState(blankpage)
+        const newPage = {
+            id: generateUUID(),
+            title: "Untitled",
+            content: []
+        }
+        setRenderState(newPage)
         setPagesState((prev) => {
             return [...prev, newPage]
         })
@@ -40,15 +50,19 @@ export default function RightDrawer() {
             template: "ReNotionJWT",
         });
         const supabase = await supabaseClient(supabaseAccessToken);
-        console.log({ page_id: blankpage.id, owner_id: userId, title: blankpage.title || "" })
+        console.log({ page_id: newPage.id, owner_id: userId, title: newPage.title })
         const { data, error } = await supabase
             .from("pages")
-            .insert({ page_id: blankpage.id, owner_id: userId, title: blankpage.title })
+            .insert({ page_id: newPage.id, owner_id: userId, title: "Untitled" })
             .select()
         if (error) {
             console.log(error)
         }
         console.log(data)
+    }
+
+    if (isLoading && isLoaded) {
+        return <p>Loading....</p>
     }
 
 
