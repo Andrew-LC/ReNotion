@@ -5,3 +5,4 @@ This is a simple Notion clone made using:
 - TailwindCSS
 - SupaBase
 - Recoil 
+- Clerk
